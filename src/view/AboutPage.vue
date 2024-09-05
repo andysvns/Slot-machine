@@ -70,6 +70,7 @@
                     </v-btn>
                 </div>
             </v-container>
+
         </v-main>
     </v-app>
 </template>
@@ -367,4 +368,6 @@ export default {};
     height: 125%;
     display: none;
 }
+
+
 </style>
