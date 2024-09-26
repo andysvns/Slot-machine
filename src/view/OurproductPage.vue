@@ -216,6 +216,7 @@
 .background {
     background-color: rgb(183, 8, 8);
 }
+
 .score-machine-warper {
 height: auto;
 display: flex;
