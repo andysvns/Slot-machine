@@ -3,18 +3,19 @@
     <v-main class="main-bg">
       <v-container class="container">
         <div class="warper-1">
-          <img class="bg-slut" src="../assets/bg2.png" alt="">
+          <img class="bg-slut" src="../assets/bg2.png" alt="" />
           <div class="slut-machine">
             <v-row class="row-1">
               <v-col class="player-detail">
                 <div class="warper-player">
                   <div>
-                    <img class="pic" src="https://pbs.twimg.com/profile_images/1635523228230885376/w9V6e7x2_200x200.png"
-                      alt="">
-
+                    <img
+                      class="pic"
+                      src="https://pbs.twimg.com/profile_images/1635523228230885376/w9V6e7x2_200x200.png"
+                      alt=""
+                    />
                   </div>
                   <div>
-
                     <v-row class="warper-name-point">
                       <v-col class="name-point">
                         <h4>player</h4>
@@ -29,34 +30,70 @@
               <v-col class="wheel-cols pa-1" v-for="n in 3" :key="n">
                 <div class="wheel" :ref="`wheel${n}`">
                   <div class="overlay"></div>
-                  <img :src="require(`@/assets/wheel${n}.png`)" alt="" class="wheel-image" />
-                  <img src="@/assets/spinning.gif" alt="" class="slotSpinAnimation" />
+                  <img
+                    :src="require(`@/assets/wheel${n}.png`)"
+                    alt=""
+                    class="wheel-image"
+                  />
+                  <img
+                    src="@/assets/spinning.gif"
+                    alt=""
+                    class="slotSpinAnimation"
+                  />
                 </div>
               </v-col>
             </v-row>
             <div id="coin-container" class="coin-container">
-              <div v-for="(coin, index) in coins" :key="index" class="coin" 
-       :style="{ '--x': coin.x, '--y': coin.y, '--delay': coin.delay }"
-       :class="{ explode: coin.exploded, drop: coin.dropped }">
-  </div>
-</div>
+              <div
+                v-for="(coin, index) in coins"
+                :key="index"
+                class="coin"
+                :style="{
+                  '--x': coin.x,
+                  '--y': coin.y,
+                  '--delay': coin.delay,
+                  '--rotation': coin.rotation,
+                  'background-image': coin.backgroundImage,
+                }"
+                :class="{ explode: coin.exploded, drop: coin.dropped }"
+              ></div>
+            </div>
 
             <v-row class="spinner-warper">
               <v-col class="spinner justify-center">
-                <v-btn @click="triggerSpin" :disabled="spinning" class="custom-btn" text>{{ spinning ? 'Spin' : 'Spin'
-                  }}</v-btn>
+                <v-btn
+                  @click="triggerSpin"
+                  :disabled="spinning"
+                  class="custom-btn"
+                  text
+                  >{{ spinning ? "Spin" : "Spin" }}</v-btn
+                >
               </v-col>
             </v-row>
+            <v-dialog
+              class="custom-dialog no-shadow-no-border"
+              overlay-opacity="0.7"
+              v-model="showWinningPopup"
+              max-width="500"
+            >
+              <div class="dialog-content-2">
+                <img
+                  src="../assets/Jackpotwin.png"
+                  class="popup-score-img"
+                  alt=""
+                />
+                <div class="content-wrapper-2">
+                  <div class="text-center">
+                    <div class="display-4 font-weight-bold">
+                      {{ winningScore }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </v-dialog>
           </div>
         </div>
-
-
-
-
       </v-container>
-
-
-
     </v-main>
   </v-app>
 </template>
@@ -82,71 +119,158 @@ export default {
         anybar: [0, 0, 80],
       },
       slots: [
-        ["orange", "bell", "orange", "bar2", "prune", "orange", "bar3", "prune", "orange", "bar1", "bell", "cherry", "orange", "prune", "bell", "bar1", "cherry", "seven", "orange", "prune", "orange", "bell", "orange"],
-        ["cherry", "prune", "orange", "bell", "bar1", "cherry", "prune", "bar3", "cherry", "bell", "orange", "bar1", "seven", "cherry", "bar2", "cherry", "bell", "prune", "cherry", "orange", "cherry", "prune", "orange"],
-        ["cherry", "orange", "bell", "prune", "bar2", "cherry", "prune", "orange", "bar3", "cherry", "bell", "orange", "cherry", "orange", "cherry", "prune", "bar1", "seven", "bell", "cherry", "cherry", "orange", "bell"],
+        [
+          "orange",
+          "bell",
+          "orange",
+          "bar2",
+          "prune",
+          "orange",
+          "bar3",
+          "prune",
+          "orange",
+          "bar1",
+          "bell",
+          "cherry",
+          "orange",
+          "prune",
+          "bell",
+          "bar1",
+          "cherry",
+          "seven",
+          "orange",
+          "prune",
+          "orange",
+          "bell",
+          "orange",
+        ],
+        [
+          "cherry",
+          "prune",
+          "orange",
+          "bell",
+          "bar1",
+          "cherry",
+          "prune",
+          "bar3",
+          "cherry",
+          "bell",
+          "orange",
+          "bar1",
+          "seven",
+          "cherry",
+          "bar2",
+          "cherry",
+          "bell",
+          "prune",
+          "cherry",
+          "orange",
+          "cherry",
+          "prune",
+          "orange",
+        ],
+        [
+          "cherry",
+          "orange",
+          "bell",
+          "prune",
+          "bar2",
+          "cherry",
+          "prune",
+          "orange",
+          "bar3",
+          "cherry",
+          "bell",
+          "orange",
+          "cherry",
+          "orange",
+          "cherry",
+          "prune",
+          "bar1",
+          "seven",
+          "bell",
+          "cherry",
+          "cherry",
+          "orange",
+          "bell",
+        ],
       ],
       wheelsSpinning: [false, false, false],
       spinTimeouts: [],
       postSpinAdjustment: 65,
       isBlinking: false,
+
+      showWinningPopup: false,
+      winningScore: 0,
     };
   },
   methods: {
     explodeCoins() {
-  this.coins = []; // Clear previous coins
+      this.coins = []; // Clear previous coins
 
-  const coinCount = 20;
-  const explosionDuration = 300; // Shortened explosion window (in ms)
-  
-  for (let i = 0; i < coinCount; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const distance = Math.random() * 150 + 100;
-    
-    const x = Math.cos(angle) * distance;
-    const y = Math.sin(angle) * distance;
+      const coinCount = 70;
+      for (let i = 0; i < coinCount; i++) {
+        // Calculate the angle to spread coins evenly around the circle
+        let angle = (i / coinCount) * Math.PI * 2; // Evenly spread angles
 
-    // Convert angle to degrees for CSS rotation
+        // Introduce a small random variation to the angle
+        angle += (Math.random() - 0.5) * 0.2; // Small random variation in angle
 
+        // Randomize the distance, but within a reasonable range
+        const distance = Math.random() * 300 + 125; // Random distance between 150px and 450px
 
-    // Random delay within the explosion duration
-    const delay = Math.random() * explosionDuration + 'ms';
+        const x = Math.cos(angle) * distance + "px";
+        const y = Math.sin(angle) * distance + "px";
 
-    this.coins.push({
-      x: x + 'px',
-      y: y + 'px',
+        // Calculate a delay based on the coin index
+        const delay = i * 0.0 + "s"; // Keep as is or adjust for slower explosions
+        const rotation = Math.random() * 360 + "deg"; // Random rotation for each coin
 
-      delay: delay,
-      exploded: false,
-      dropped: false
-    });
-  }
+        // Randomly select between two background images
 
-  // Trigger all explosions within the explosion duration
-  setTimeout(() => {
-    this.coins.forEach((coin) => {
-      coin.exploded = true;
-    });
-  }, 0);
+        const backgroundImage =
+          Math.random() < 0.5
+            ? `url(${require("@/assets/coin_still.png")})`
+            : `url(${require("@/assets/coin_spin_slow.gif")})`;
 
-  // Trigger coin drop and fade-out after explosion
-  setTimeout(() => {
-    this.coins.forEach((coin) => {
-      coin.dropped = true;
-    });
-  }, explosionDuration + 100); // Wait for explosion duration plus a little extra
-},
+        // Push coin data with random position and rotation
+        this.coins.push({
+          x: x,
+          y: y,
+          exploded: false,
+          dropped: false,
+          delay: delay,
+          backgroundImage: backgroundImage, // Assign random background image
+          rotation: rotation,
+        });
+      }
+
+      // Trigger explosion
+      setTimeout(() => {
+        this.coins.forEach((coin) => {
+          coin.exploded = true;
+        });
+      }, 50);
+
+      // Trigger coin drop and fade-out after explosion
+      setTimeout(() => {
+        this.coins.forEach((coin) => {
+          coin.dropped = true;
+        });
+      }, 600); //duration of coin
+    },
+
     triggerSpin() {
       if (this.spinning || this.credits <= 0) return;
 
-      const WheelSpin = new Audio(require('@/assets/spinning_sfx_2.wav'));
+      const WheelSpin = new Audio(require("@/assets/spinning_sfx_2.wav"));
       WheelSpin.play();
       setTimeout(() => {
         WheelSpin.pause();
         WheelSpin.currentTime = 0; // Reset the audio playback position
       }, 3500);
 
-      const WheelStop = new Audio(require('@/assets/wheel_stop_2.wav'));
+      const WheelStop = new Audio(require("@/assets/wheel_stop_2.wav"));
       setTimeout(() => {
         WheelStop.play();
         setTimeout(() => {
@@ -166,9 +290,7 @@ export default {
       this.updateCoinBar();
 
       this.spin = [
-        17,
-        12,
-        17,
+        // 17, 12, 17,
         Math.floor(Math.random() * 23),
         Math.floor(Math.random() * 23),
         Math.floor(Math.random() * 23),
@@ -181,11 +303,19 @@ export default {
         this.startSpinAnimation();
 
         const baseDuration = 2000;
-        this.spinTimeouts.push(setTimeout(() => this.stopSpin(0), baseDuration));
-        this.spinTimeouts.push(setTimeout(() => this.stopSpin(1), baseDuration + 500));
-        this.spinTimeouts.push(setTimeout(() => this.stopSpin(2), baseDuration + 1000));
+        this.spinTimeouts.push(
+          setTimeout(() => this.stopSpin(0), baseDuration)
+        );
+        this.spinTimeouts.push(
+          setTimeout(() => this.stopSpin(1), baseDuration + 500)
+        );
+        this.spinTimeouts.push(
+          setTimeout(() => this.stopSpin(2), baseDuration + 1000)
+        );
 
-        this.spinTimeouts.push(setTimeout(() => this.forceStopAllWheels(), baseDuration + 2000));
+        this.spinTimeouts.push(
+          setTimeout(() => this.forceStopAllWheels(), baseDuration + 2000)
+        );
       });
     },
     startSpinAnimation() {
@@ -228,7 +358,7 @@ export default {
         setTimeout(() => {
           const finalPosition = basePosition - 85 + this.postSpinAdjustment;
           mainImage.style.top = `-${finalPosition}px`;
-          mainImage.style.transition = 'top 0.2s ease-out';
+          mainImage.style.transition = "top 0.2s ease-out";
         }, 50);
 
         this.wheelsSpinning[slotIndex] = false;
@@ -246,14 +376,14 @@ export default {
       });
     },
     checkSpinCompletion() {
-      if (!this.wheelsSpinning.some(spinning => spinning)) {
+      if (!this.wheelsSpinning.some((spinning) => spinning)) {
         this.spinning = false;
         this.clearSpinTimeouts();
         this.endSpin();
       }
     },
     clearSpinTimeouts() {
-      this.spinTimeouts.forEach(timeout => clearTimeout(timeout));
+      this.spinTimeouts.forEach((timeout) => clearTimeout(timeout));
       this.spinTimeouts = [];
     },
     updateCoinBar() {
@@ -281,18 +411,29 @@ export default {
       }
 
       winnedScore = this.slotsTypes[slotType][matches - 1] || 0;
+
       this.score += winnedScore;
 
-
-      // Play coin sound if the score is positive
       if (winnedScore > 0) {
-        const CoinSound = new Audio(require('@/assets/coin_sfx.wav'));
+        const CoinSound = new Audio(require("@/assets/coin2s.wav"));
         CoinSound.play();
         this.explodeCoins();
         this.isBlinking = true;
         setTimeout(() => {
           this.isBlinking = false;
         }, 1500);
+
+        // Delay the popup by 1.5 seconds
+        setTimeout(() => {
+          // Show winning popup
+          this.winningScore = winnedScore;
+          this.showWinningPopup = true;
+
+          // Hide popup after 3 seconds
+          setTimeout(() => {
+            this.showWinningPopup = false;
+          }, 2000);
+        }, 500); // second delay
       }
 
       this.updateCoinBar();
@@ -323,8 +464,7 @@ export default {
 
 <style lang="scss" scoped>
 .main-bg {
-  background-color: rgb(132, 226, 255);
-
+  background-color: rgb(116, 217, 248);
 }
 
 .bg-slut {
@@ -368,13 +508,10 @@ export default {
   // background-color: #ffffff;
 }
 
-.warper-name-point {}
-
 .name-point {
   z-index: 3;
   text-align: end;
 }
-
 
 .player-detail {
   width: 430px;
@@ -393,7 +530,6 @@ export default {
   max-width: 46px;
   max-height: 46px;
   z-index: 1;
-
 }
 
 .warper-player {
@@ -406,7 +542,6 @@ export default {
   margin-top: 52%;
   padding: 0 5px;
 }
-
 
 /////////
 .slut-machine-warper {
@@ -421,8 +556,6 @@ export default {
   margin-left: 17%;
   margin-top: 22%;
 }
-
-
 
 .slut-machine-warper .wheel {
   // box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
@@ -444,7 +577,6 @@ export default {
 }
 
 .slut-machine-warper .wheel img.slotSpinAnimation {
-
   width: 85px;
   height: 150%;
   display: none;
@@ -476,48 +608,12 @@ export default {
   display: none;
 }
 
-
-
-
-
 .spinner-warper {
   margin: 0;
   padding: 5% 0;
   width: 430px;
   display: flex;
   flex-direction: column;
-}
-
-
-
-.btn-1 {
-
-  background-color: #ff4500;
-  color: white;
-  position: relative;
-  width: 150px;
-  text-decoration: none;
-  background-image: linear-gradient(bottom,
-      rgb(0, 0, 0) 0%,
-      rgb(70, 136, 183) 00%);
-  box-shadow: inset 0px 1px 0px #710f0f, 0px 6px 0px #940c0c;
-  border-radius: 5px;
-  font-family: Arial, sans-serif;
-  font-size: 24px;
-  font-weight: bold;
-  padding: 15px 30px;
-  z-index: 6;
-}
-
-.btn-1:active {
-  top: 7px;
-  background-image: linear-gradient(bottom,
-      rgb(255, 83, 83) 100%,
-      rgb(156, 6, 6) 0%);
-  box-shadow: inset 0px 1px 0px #f36b6b, inset 0px -1px 0px #840000;
-  color: #ffffff;
-  text-shadow: 0px 1px 1px rgba(255, 255, 255, 0.3);
-  background: rgb(202, 44, 44);
 }
 
 .blink {
@@ -555,16 +651,13 @@ export default {
 
 .custom-btn:hover {
   background-color: #d43b03;
-
 }
 
 .custom-btn:active {
   transform: translateY(10px);
   background-color: #d43b03;
   box-shadow: 0 0 0;
-
 }
-
 
 @keyframes blink-animation {
   0% {
@@ -588,20 +681,18 @@ export default {
 
 @media screen and (max-width: 375px) {
   .slut-machine-warper {
-
     margin-left: 20%;
     margin-top: 25%;
   }
-
 }
 
 .spin-btn {
   z-index: 3;
 }
 
-
-
 .coin-container {
+  min-width: 360px;
+  max-width: 430px;
   margin-top: -100px;
   pointer-events: none;
   display: flex;
@@ -613,49 +704,163 @@ export default {
 .coin {
   width: 60px;
   height: 60px;
-  background-image: url('../assets/coin_spin.gif');
   background-size: cover;
   opacity: 0;
-  /* Initially invisible */
   transform: scale(0);
-  /* Start scaled down */
-  // transition: transform 0.5s ease-in, opacity 0.3s ease-in var(--delay);
-  // transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1.5) var(--delay),
-  // opacity 0.5s ease-out var(--delay);
-  /* Smooth transition for all properties */
   z-index: 6;
   position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1.5);
+  transition: transform 0.6s ease var(--delay),
+    opacity 0.1s ease-in var(--delay);
 }
 
 .coin.explode {
-    opacity: 1;
-    transform: scale(1) translate(var(--x), var(--y));
+  opacity: 1;
+  transform: scale(1) translate(var(--x), var(--y)) rotate(var(--rotation));
 }
 
 .coin.drop {
-    animation: drop 0.5s ease-out forwards, fade-out 0.5s ease-out forwards;
+  // animation: recenter 0.5s ease-out forwards, fade-out 0.5s ease-out forwards;
+  animation: recenter 0.3s ease-out forwards, fade-out 0.15s ease-out forwards;
+}
+
+.custom-win-text {
+  background: #bbbbbb;
+  background: repeating-linear-gradient(to bottom, #bbbbbb 0%, #ffffff 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Keyframes for the coin drop effect */
-@keyframes drop {
-    0% {
-        transform: translate(var(--x), var(--y)) translateY(0);
-    }
-
+@keyframes recenter {
+  0% {
+    transform: translate(var(--x), var(--y)) rotate(var(--rotation))
+      translateY(0);
+  }
 }
 
 /* Keyframes for the fade-out effect */
 @keyframes fade-out {
-    0% {
-        opacity: 1;
-    }
+  0% {
+    opacity: 1;
+  }
 
-    100% {
-        opacity: 0;
-    }
+  100% {
+    opacity: 0;
+  }
+}
+
+.v-dialog {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.headline {
+  font-size: 24px !important;
+  font-weight: bold;
+}
+
+.display-3 {
+  margin-top: 35px;
+  font-size: 48px !important;
+  background: #949494;
+  background: repeating-linear-gradient(to bottom, #c7c7c7 0%, #ffffff 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle-1 {
+  font-size: 18px !important;
+}
+
+.dialog-content {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: 100px 50px;
+  overflow: hidden;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("/src/assets/Jackpotwin.png");
+  background-size: 100%;
+  background-position: center;
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 10;
+  // background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.headline {
+  margin-bottom: 20px;
+}
+
+.content-wrapper-2 {
+  padding: 0;
+  position: absolute;
+  // display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog-content-2 {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.popup-score-img {
+  // margin-top: -50px;
+  position: absolute;
+  z-index: -2;
+  width: 500px;
+
+  animation: fadeIn 0.5s ease forwards;
+}
+.display-4 {
+  padding: 0;
+  margin-top: 35px;
+  font-size: 48px !important;
+  background: #949494;
+  background: repeating-linear-gradient(to bottom, #c7c7c7 0%, #ffffff 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  z-index: 11;
+  position: relative;
+  text-align: center;
+}
+
+.custom-dialog {
+  .v-dialog__content {
+    transition: all 0.3s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 </style>
